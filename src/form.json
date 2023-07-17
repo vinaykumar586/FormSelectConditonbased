@@ -1,0 +1,68 @@
+[
+  {
+    "type": "text",
+    "label": "Text Field",
+    "onChange": "handleTextFieldChange"
+  },
+  {
+    "type": "number",
+    "label": "Number Field",
+    "onChange": "handleNumberFieldChange",
+    "value": 0
+  },
+  {
+    "type": "select",
+    "label": "Select Field",
+    "onChange": "handleSelectFieldChange",
+    "value": "option1",
+    "options": [
+      { "value": "option1", "label": "Option 1" },
+      { "value": "option2", "label": "Option 2" },
+      { "value": "option3", "label": "Option 3" }
+    ],
+    "additionalFields": {
+      "option2": {
+        "type": "text",
+        "label": "Additional Field for Option 2",
+        "onChange": "handleAdditionalFieldChange",
+        "value": ""
+      },
+      "option3": {
+        "type": "select",
+        "label": "Select AdditionalField",
+        "onChange": "handleSelectFieldChange",
+        "value": "option1",
+        "options": [
+          { "value": "option1", "label": "Option 1" },
+          { "value": "option2", "label": "Option 2" },
+          { "value": "option3", "label": "Option 3" }
+        ]
+      }
+    }
+  },
+  {
+    "type": "checkbox",
+    "label": "Checkbox Field",
+    "onChange": "handleCheckboxFieldChange",
+    "value": false,
+    "additionalFields": {
+      "isChecked": {
+        "type": "text",
+        "label": "Additional Field if Checkbox is Checked",
+        "onChange": "handleAdditionalFieldChange",
+        "value": ""
+      }
+    }
+  },
+  {
+    "type": "radio",
+    "label": "Radio Button Field",
+    "onChange": "handleRadioButtonChange",
+    "value": "option1",
+    "options": [
+      { "value": "option1", "label": "Option 1" },
+      { "value": "option2", "label": "Option 2" },
+      { "value": "option3", "label": "Option 3" }
+    ]
+  }
+]
