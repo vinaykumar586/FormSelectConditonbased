@@ -1,129 +1,114 @@
 import React, { useState } from 'react';
-import form from './form.json';
 
-const MyForm = () => {
-  const [formFields, setFormFields] = useState(form);
+const FormSelect = ({ options, label, additionalInfo }) => {
+  const [selectedOption, setSelectedOption] = useState('');
+  const [showChildren, setShowChildren] = useState(false);
 
-  // Define the onChange event handlers for different fields
-  const handleTextFieldChange = (event, index) => {
-    const updatedFields = [...formFields];
-    updatedFields[index].value = event.target.value;
-    setFormFields(updatedFields);
-  };
+  const handleSelectChange = (event) => {
+    const selectedValue = event.target.value;
+    setSelectedOption(selectedValue);
 
-  const handleNumberFieldChange = (event, index) => {
-    const updatedFields = [...formFields];
-    updatedFields[index].value = parseInt(event.target.value, 10);
-    setFormFields(updatedFields);
-  };
-
-  const handleSelectFieldChange = (event, index) => {
-    const updatedFields = [...formFields];
-    updatedFields[index].value = event.target.value;
-    setFormFields(updatedFields);
-  };
-
-  const handleCheckboxFieldChange = (event, index) => {
-    const updatedFields = [...formFields];
-    updatedFields[index].value = event.target.checked;
-    setFormFields(updatedFields);
-  };
-
-  const handleAdditionalFieldChange = (event, index, optionValue) => {
-    const updatedFields = [...formFields];
-    const additionalFieldKey = `additionalFields.${optionValue}.value`;
-    updatedFields[index][additionalFieldKey] = event.target.value;
-    setFormFields(updatedFields);
+    // If the selected option has children and additionalInfo is true, show children
+    if (options && additionalInfo && selectedValue !== '') {
+      setShowChildren(true);
+    } else {
+      setShowChildren(false);
+    }
   };
 
   return (
-    <form>
-      {formFields.map((field, index) => {
-        const { type, label, value, options, additionalFields, onChange } =
-          field;
-        return (
-          <div key={index}>
-            <label>{label}</label>
-            {type === 'text' && (
-              <input
-                type="text"
-                onChange={(e) => handleTextFieldChange(e, index)}
+    <div>
+      <label>{label}</label>
+      <select value={selectedOption} onChange={handleSelectChange}>
+        <option value="">Select an option</option>
+        {options.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+      {showChildren && additionalInfo && (
+        <div>
+          {options.map((option) =>
+            option.children && option.additionalInfo ? (
+              <FormSelect
+                key={option.value}
+                options={option.children}
+                label={option.label}
+                additionalInfo={option.additionalInfo}
               />
-            )}
-            {type === 'number' && (
-              <input
-                type="number"
-                value={value}
-                onChange={(e) => handleNumberFieldChange(e, index)}
-              />
-            )}
-            {type === 'select' && (
-              <select
-                value={value}
-                onChange={(e) => handleSelectFieldChange(e, index)}
-              >
-                {options.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            )}
-            {type === 'checkbox' && (
-              <input
-                type="checkbox"
-                checked={value}
-                onChange={(e) => handleCheckboxFieldChange(e, index)}
-              />
-            )}
-            {type === 'radio' &&
-              options.map((option) => (
-                <label key={option.value}>
-                  <input
-                    type="radio"
-                    value={option.value}
-                    checked={value === option.value}
-                    onChange={(e) => handleSelectFieldChange(e, index)}
-                  />
-                  {option.label}
-                </label>
-              ))}
-            {additionalFields &&
-              value in additionalFields &&
-              additionalFields[value].type === 'text' && (
-                <input
-                  type="text"
-                  value={additionalFields[value].value}
-                  onChange={(e) => handleAdditionalFieldChange(e, index, value)}
-                />
-              )}
-            {additionalFields &&
-              value in additionalFields &&
-              additionalFields[value].type === 'number' && (
-                <input
-                  type="number"
-                  value={additionalFields[value].value}
-                  onChange={(e) => handleAdditionalFieldChange(e, index, value)}
-                />
-              )}
-                {additionalFields &&
-              value in additionalFields &&
-              additionalFields[value].type === 'select' && (
-                <select
-                value={value}
-                onChange={(e) => handleSelectFieldChange(e, index)}
-              >
-                {options.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-              )}
-          </div>
-        );
-      })}
-    </form>
+            ) : null
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
+const MyForm = () => {
+  const formData = [
+    {
+      label: 'First Option',
+      additionalInfo: true,
+      options: [
+        { label: 'Child Option 1', value: 'child1', additionalInfo: false },
+        { label: 'Child Option 2', value: 'child2', additionalInfo: false },
+      ],
+    },
+    {
+      label: 'Second Option',
+      additionalInfo: false,
+      options: [
+        {
+          label: 'Child Option 3',
+          value: 'child3',
+          additionalInfo: true,
+          children: [
+            {
+              label: 'Grandchild Option 1',
+              value: 'grandchild1',
+              additionalInfo: false,
+            },
+            {
+              label: 'Grandchild Option 2',
+              value: 'grandchild2',
+              additionalInfo: false,
+            },
+          ],
+        },
+        {
+          label: 'Child Option 4',
+          value: 'child4',
+          additionalInfo: true,
+          children: [
+            {
+              label: 'Grandchild Option 3',
+              value: 'grandchild3',
+              additionalInfo: false,
+            },
+            {
+              label: 'Grandchild Option 4',
+              value: 'grandchild4',
+              additionalInfo: false,
+            },
+          ],
+        },
+      ],
+    },
+    // Add more FormSelect objects as needed
+  ];
+
+  return (
+    <div>
+      {formData.map((formSelect) => (
+        <FormSelect
+          key={formSelect.label}
+          options={formSelect.options}
+          label={formSelect.label}
+          additionalInfo={formSelect.additionalInfo}
+        />
+      ))}
+    </div>
   );
 };
 
